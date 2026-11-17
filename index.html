@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#A47873">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PRETHUSKA — Acessórios e Makeup</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Firebase App & Firestore SDKs (Modular CDN v10) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const firebaseConfig = {
+apiKey: "AIzaSyBXDuFF10ItHJ4XhOMJ0ZKYayOFLZ9WXFI",
+authDomain: "prethuska-60712.firebaseapp.com",
+projectId: "prethuska-60712",
+storageBucket: "prethuska-60712.firebasestorage.app",
+messagingSenderId: "270411056296",
+appId: "1:270411056296:web:74c3dbb114c6f799af2e9d"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db = db;
+window.firebaseColl = collection;
+window.firebaseDoc = doc;
+window.firebaseGetDoc = getDoc;
+window.firebaseSetDoc = setDoc;
+window.firebaseGetDocs = getDocs;
+window.firebaseDeleteDoc = deleteDoc;
+window.firebaseOnSnapshot = onSnapshot;
+window.firebaseAddDoc = addDoc;
+if (window.onFirebaseReady) window.onFirebaseReady();
+</script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+serif: ['"Cormorant Garamond"', 'serif'],
+},
+colors: {
+mauve: {
+50: '#FDF8F7',
+100: '#F7ECEA',
+200: '#EAD6D3',
+300: '#D4B5B0',
+500: '#A47873',
+600: '#8E635E',
+700: '#744F4B',
+900: '#3D2927',
+},
+gold: {
+100: '#FDF6E2',
+300: '#F8E2A6',
+400: '#F3D078',
+500: '#D9A74A',
+600: '#B8862D',
+},
+coral: {
+100: '#FDE8EA',
+400: '#F48B94',
+500: '#E86F7A',
+},
+cream: '#FDF2E3'
+}
+}
+}
+}
+</script>
+<style>
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+@keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.animate-slide-up { animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+.animate-fade-in { animation: fadeIn 0.22s ease-out forwards; }
+</style>
+</head>
+<body class="bg-mauve-50 text-mauve-900 antialiased selection:bg-mauve-500 selection:text-white pb-28">
+<!-- Toast Notifications -->
+<div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-[92%] max-w-md pointer-events-none"></div>
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-mauve-200/70 shadow-2xs">
+<div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+<div class="flex items-center gap-3 cursor-pointer" onclick="selectCategory('Todos')">
+<div class="w-12 h-12 rounded-2xl bg-mauve-500 flex flex-col items-center justify-center shadow-sm shrink-0 overflow-hidden border border-gold-400/30 p-1">
+<svg viewBox="0 0 120 120" class="w-full h-full">
+<path d="M60 44 C60 44 43 31 43 21 C43 15 48 11 53 11 C57 11 60 14 60 17 C60 14 63 11 67 11 C72 11 77 15 77 21 C77 31 60 44 60 44 Z" fill="#F3D078"/>
+<text x="60" y="72" text-anchor="middle" fill="#F3D078" font-family="'Cormorant Garamond', Georgia, serif" font-weight="700" font-size="21" letter-spacing="1.2">PRETHUSKA</text>
+<text x="60" y="88" text-anchor="middle" fill="#F3D078" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="7.5" letter-spacing="3.2">ACESSÓRIOS</text>
+</svg>
+</div>
+<div>
+<h1 id="header-store-name" class="font-serif text-xl sm:text-2xl font-bold text-mauve-900 tracking-wide leading-none">PRETHUSKA</h1>
+<p id="header-store-subtitle" class="text-[11px] font-medium text-mauve-600 mt-1">acessórios e makeup</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<a id="header-insta-link" href="https://www.instagram.com/prethuskaacessorios" target="_blank" rel="noopener noreferrer"
+class="w-10 h-10 rounded-xl bg-mauve-100 hover:bg-coral-400 hover:text-white text-mauve-700 flex items-center justify-center transition">
+<i class="fa-brands fa-instagram text-lg"></i>
+</a>
+<button type="button" onclick="openCustomerProfileModal()" class="px-3.5 py-2.5 rounded-xl bg-mauve-100 hover:bg-mauve-200 text-mauve-900 transition flex items-center gap-1.5 text-xs font-semibold cursor-pointer">
+<i class="fa-solid fa-cake-candles text-mauve-600"></i>
+<span id="header-user-greeting">Clube VIP</span>
+</button>
+</div>
+</div>
+<div class="max-w-5xl mx-auto px-4 pb-3 space-y-2.5">
+<div class="relative">
+<i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-mauve-500 text-sm"></i>
+<input type="text" id="search-input" oninput="renderProducts()" placeholder="Buscar acessórios, maquiagens, kits..." 
+class="w-full pl-10 pr-4 py-2.5 bg-mauve-100/70 border border-transparent focus:border-mauve-500 focus:bg-white rounded-xl text-sm outline-none transition placeholder:text-mauve-500/70">
+</div>
+<div id="category-pills" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5"></div>
+</div>
+</header>
+<!-- Hero Banner -->
+<section class="max-w-5xl mx-auto px-4 pt-4">
+<div class="bg-gradient-to-br from-coral-400 via-[#F1828C] to-mauve-500 rounded-3xl p-5 sm:p-7 shadow-sm relative overflow-hidden text-white">
+<div class="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-gold-300/20 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+<div class="space-y-2.5 max-w-xl">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-semibold">
+<i class="fa-solid fa-sparkles text-gold-300"></i>
+<span>Acessórios & Maquiagem • Mãe e Filha</span>
+</div>
+<h2 class="font-serif text-2xl sm:text-3xl font-bold leading-tight">PRETHUSKA <span class="italic font-normal text-cream">acessórios e makeup</span></h2>
+<div class="bg-cream text-mauve-700 px-4 py-2.5 rounded-2xl inline-block shadow-xs border border-gold-300/40">
+<p class="text-xs sm:text-sm font-semibold">"Trazendo mais beleza para o seu dia a dia e da sua filha!"</p>
+</div>
+</div>
+<div class="flex flex-wrap sm:flex-col gap-2.5 shrink-0">
+<a id="hero-insta-btn" href="https://www.instagram.com/prethuskaacessorios" target="_blank" rel="noopener noreferrer"
+class="px-4 py-2.5 rounded-xl bg-white text-mauve-700 hover:bg-cream font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+<i class="fa-brands fa-instagram text-base text-coral-500"></i>
+<span>@prethuskaacessorios</span>
+</a>
+<button type="button" onclick="openCustomerProfileModal()" class="px-4 py-2.5 rounded-xl bg-mauve-900/85 hover:bg-mauve-900 text-gold-300 font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+<i class="fa-solid fa-gift"></i>
+<span>Ganhe mimo no aniversário</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Vitrine -->
+<main class="max-w-5xl mx-auto px-4 pt-6">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 id="catalog-title" class="font-serif text-2xl font-bold text-mauve-900">Nossa Vitrine</h3>
+<p class="text-xs text-mauve-600">Toque para ver todos os detalhes</p>
+</div>
+<span id="product-count" class="text-xs font-semibold px-3 py-1 rounded-full bg-mauve-100 text-mauve-700">0 itens</span>
+</div>
+<div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5"></div>
+<div id="empty-state" class="hidden py-16 text-center space-y-3">
+<div class="w-16 h-16 rounded-full bg-mauve-100 text-mauve-500 flex items-center justify-center mx-auto text-2xl">
+<i class="fa-solid fa-bag-shopping"></i>
+</div>
+<h4 class="font-serif text-lg font-bold text-mauve-900">Nenhum item encontrado</h4>
+</div>
+</main>
+<!-- Footer -->
+<footer class="max-w-5xl mx-auto px-4 mt-14 pt-8 border-t border-mauve-200/80 text-center space-y-3">
+<div class="inline-flex items-center gap-2 text-mauve-700 font-serif text-lg font-bold">
+<i class="fa-solid fa-heart text-gold-500 text-sm"></i>
+<span>PRETHUSKA Acessórios e Makeup</span>
+</div>
+<p class="text-xs text-mauve-600">Trazendo mais beleza para o seu dia a dia e da sua filha!</p>
+<div class="flex items-center justify-center gap-4 pt-1">
+<a id="footer-insta-link" href="https://www.instagram.com/prethuskaacessorios" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-mauve-700 hover:text-coral-500 transition">
+<i class="fa-brands fa-instagram text-base"></i> Siga no Instagram
+</a>
+</div>
+</footer>
+<!-- Floating WhatsApp Button -->
+<div class="fixed bottom-24 right-5 z-40">
+<a id="floating-whatsapp-btn" href="https://wa.me/5519994604562?text=Olá! Gostaria de tirar dúvidas sobre os acessórios." target="_blank" rel="noopener noreferrer"
+class="w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-xl shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95 text-2xl">
+<i class="fa-brands fa-whatsapp"></i>
+</a>
+</div>
+<!-- Floating Cart Bar -->
+<div id="floating-cart-bar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-lg hidden">
+<button onclick="openCartDrawer()" class="w-full bg-mauve-900 hover:bg-mauve-700 active:scale-[0.99] text-white p-3.5 sm:p-4 rounded-2xl shadow-xl shadow-mauve-900/25 flex items-center justify-between transition border border-gold-400/20">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-mauve-500 text-gold-300 flex items-center justify-center font-bold">
+<i class="fa-solid fa-bag-shopping"></i>
+</div>
+<span id="cart-badge-count" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gold-400 text-mauve-900 text-[11px] font-extrabold flex items-center justify-center">0</span>
+</div>
+<div class="text-left">
+<p class="text-[11px] text-mauve-200 font-medium">Minha Sacola</p>
+<p class="text-sm font-bold text-white" id="floating-cart-total">R$ 0,00</p>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm font-bold text-gold-300">
+<span>Fechar Pedido</span>
+<i class="fa-solid fa-arrow-right"></i>
+</div>
+</button>
+</div>
+<!-- Product Details Modal -->
+<div id="product-modal" class="fixed inset-0 z-50 hidden bg-mauve-900/65 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+<div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl animate-slide-up sm:animate-fade-in max-h-[94vh] flex flex-col">
+<div id="modal-gallery-container" class="relative h-72 sm:h-80 bg-mauve-100 shrink-0 select-none overflow-hidden">
+<img id="modal-prod-img" src="" alt="Produto" class="w-full h-full object-cover transition-opacity duration-200">
+<button onclick="closeProductModal()" class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-xs text-mauve-900 flex items-center justify-center shadow-md z-10"><i class="fa-solid fa-xmark"></i></button>
+<span id="modal-prod-category" class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full bg-mauve-900/80 backdrop-blur-xs text-gold-300 text-xs font-semibold">Categoria</span>
+</div>
+<div id="modal-thumbnails-bar" class="hidden px-5 pt-3 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0"></div>
+<div class="p-5 sm:p-6 overflow-y-auto space-y-4">
+<div class="flex items-start justify-between gap-3">
+<h3 id="modal-prod-name" class="font-serif text-2xl font-bold text-mauve-900 leading-tight">Nome</h3>
+<div class="text-right shrink-0">
+<span id="modal-prod-old-price" class="hidden block text-xs text-mauve-400 line-through">R$ 0,00</span>
+<span id="modal-prod-price" class="text-xl font-bold text-mauve-600">R$ 0,00</span>
+</div>
+</div>
+<p id="modal-prod-desc" class="text-sm text-mauve-700/90 leading-relaxed"></p>
+<div id="modal-variants-box" class="hidden space-y-2 pt-1">
+<label class="block text-xs font-bold text-mauve-800">Escolha a opção / cor:</label>
+<div id="modal-variants-list" class="flex flex-wrap gap-2"></div>
+</div>
+<div class="pt-1">
+<label class="block text-xs font-semibold text-mauve-700 mb-1.5">Observação (opcional)</label>
+<input type="text" id="modal-prod-note" placeholder="Ex: Embrulhar para presente..." class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none focus:border-mauve-500">
+</div>
+</div>
+<div class="p-4 sm:p-5 border-t border-mauve-100 bg-white flex items-center gap-3 shrink-0">
+<div class="flex items-center bg-mauve-100 rounded-xl p-1">
+<button onclick="changeModalQty(-1)" class="w-9 h-9 rounded-lg hover:bg-white font-bold">-</button>
+<span id="modal-prod-qty" class="w-8 text-center text-sm font-bold">1</span>
+<button onclick="changeModalQty(1)" class="w-9 h-9 rounded-lg hover:bg-white font-bold">+</button>
+</div>
+<button id="modal-add-btn" onclick="confirmAddToCartFromModal()" class="flex-1 bg-mauve-500 hover:bg-mauve-600 text-white py-3.5 px-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md">
+<i class="fa-solid fa-bag-shopping text-gold-300"></i>
+<span>Adicionar • R$ 0,00</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Cart & Checkout Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-50 hidden bg-mauve-900/65 backdrop-blur-xs flex justify-end">
+<div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl animate-fade-in">
+<div class="p-4 sm:p-5 border-b border-mauve-200/70 flex items-center justify-between bg-mauve-50 shrink-0">
+<div class="flex items-center gap-2.5">
+<i class="fa-solid fa-bag-shopping text-mauve-600 text-lg"></i>
+<h2 class="font-serif text-xl font-bold text-mauve-900">Minha Sacola</h2>
+</div>
+<button onclick="closeCartDrawer()" class="w-9 h-9 rounded-full bg-white hover:bg-mauve-100 flex items-center justify-center text-mauve-800"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-6">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold uppercase tracking-wider text-mauve-500">Itens</h3>
+<button onclick="clearCart()" class="text-xs text-rose-600 hover:underline font-semibold">Limpar sacola</button>
+</div>
+<div id="cart-items-list" class="space-y-2.5"></div>
+</div>
+<div class="space-y-3 pt-3 border-t border-mauve-100">
+<h3 class="text-xs font-bold uppercase tracking-wider text-mauve-500">Cupom de Desconto</h3>
+<div class="flex gap-2">
+<input type="text" id="coupon-input" placeholder="Digite seu cupom" class="flex-1 px-3 py-2 bg-mauve-50 border border-mauve-200 rounded-xl text-xs uppercase outline-none">
+<button type="button" onclick="applyCoupon()" class="px-4 py-2 bg-mauve-500 text-white rounded-xl text-xs font-bold">Aplicar</button>
+</div>
+</div>
+<div class="space-y-3 pt-3 border-t border-mauve-100">
+<h3 class="text-xs font-bold uppercase tracking-wider text-mauve-500">Entrega ou Retirada?</h3>
+<div class="grid grid-cols-2 gap-2.5">
+<button type="button" id="btn-mode-delivery" onclick="setDeliveryMode('delivery')" class="p-3 rounded-2xl border-2 border-mauve-500 bg-mauve-500 text-white text-left transition flex flex-col gap-1">
+<div class="flex items-center justify-between w-full">
+<i class="fa-solid fa-motorcycle text-sm text-gold-300"></i>
+<span id="label-delivery-fee-pill" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/20">Taxa R$ 8,00</span>
+</div>
+<span class="font-bold text-sm">Delivery</span>
+</button>
+<button type="button" id="btn-mode-pickup" onclick="setDeliveryMode('pickup')" class="p-3 rounded-2xl border-2 border-mauve-200 bg-white text-mauve-800 text-left transition flex flex-col gap-1">
+<div class="flex items-center justify-between w-full">
+<i class="fa-solid fa-store text-sm text-mauve-500"></i>
+<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Grátis</span>
+</div>
+<span class="font-bold text-sm">Retirada</span>
+</button>
+</div>
+<div id="delivery-address-box" class="bg-mauve-50 p-3.5 rounded-2xl border border-mauve-200/80 space-y-2.5">
+<p class="text-xs font-bold text-mauve-800"><i class="fa-solid fa-location-dot text-mauve-500 mr-1"></i> Endereço de Entrega:</p>
+<div class="grid grid-cols-3 gap-2">
+<input type="text" id="cust-street" placeholder="Rua *" class="col-span-2 px-3 py-2 bg-white border border-mauve-200 rounded-xl text-xs outline-none">
+<input type="text" id="cust-number" placeholder="Nº *" class="px-3 py-2 bg-white border border-mauve-200 rounded-xl text-xs outline-none">
+</div>
+<div class="grid grid-cols-2 gap-2">
+<input type="text" id="cust-neighborhood" placeholder="Bairro *" class="px-3 py-2 bg-white border border-mauve-200 rounded-xl text-xs outline-none">
+<input type="text" id="cust-complement" placeholder="Complemento" class="px-3 py-2 bg-white border border-mauve-200 rounded-xl text-xs outline-none">
+</div>
+</div>
+<div id="pickup-info-box" class="hidden bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 space-y-1">
+<p class="text-xs font-bold text-emerald-900"><i class="fa-solid fa-shop mr-1"></i> Retirada na Loja:</p>
+<p id="checkout-store-address" class="text-xs text-emerald-800"></p>
+</div>
+</div>
+<div class="space-y-3 pt-3 border-t border-mauve-100">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold uppercase tracking-wider text-mauve-500">Seus Dados</h3>
+<span class="text-[11px] text-mauve-600 font-semibold"><i class="fa-solid fa-cake-candles text-coral-500 mr-1"></i>Clube Aniversariante</span>
+</div>
+<div class="space-y-2.5">
+<input type="text" id="cust-name" placeholder="Seu Nome Completo *" class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none">
+<div class="grid grid-cols-2 gap-2.5">
+<input type="tel" id="cust-phone" oninput="maskPhone(this)" placeholder="WhatsApp *" maxlength="15" class="w-full px-3 py-2 bg-mauve-50 border border-mauve-200 rounded-xl text-xs outline-none">
+<input type="text" id="cust-birthday" oninput="maskDate(this)" placeholder="Aniversário *" maxlength="10" class="w-full px-3 py-2 bg-mauve-50 border border-mauve-200 rounded-xl text-xs outline-none">
+</div>
+</div>
+</div>
+<div class="space-y-2.5 pt-3 border-t border-mauve-100">
+<h3 class="text-xs font-bold uppercase tracking-wider text-mauve-500">Pagamento</h3>
+<select id="cust-payment" onchange="toggleChangeField()" class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none">
+<option value="Pix">Pix</option>
+<option value="Cartão de Crédito">Cartão de Crédito</option>
+<option value="Cartão de Débito">Cartão de Débito</option>
+<option value="Dinheiro">Dinheiro</option>
+</select>
+<div id="cash-change-box" class="hidden">
+<input type="text" id="cust-change" placeholder="Troco para quanto?" class="w-full px-3.5 py-2 bg-amber-50 border border-amber-200 rounded-xl text-xs outline-none">
+</div>
+</div>
+</div>
+<div class="p-4 sm:p-5 border-t border-mauve-200/80 bg-mauve-50 space-y-3 shrink-0">
+<div class="space-y-1 text-xs">
+<div class="flex justify-between text-mauve-700"><span>Subtotal</span><span id="checkout-subtotal" class="font-semibold">R$ 0,00</span></div>
+<div id="checkout-discount-row" class="hidden justify-between text-emerald-600"><span>Desconto Cupom</span><span id="checkout-discount" class="font-semibold">- R$ 0,00</span></div>
+<div class="flex justify-between text-mauve-700"><span>Taxa de entrega</span><span id="checkout-delivery-fee" class="font-semibold">R$ 0,00</span></div>
+<div class="flex justify-between text-base font-bold text-mauve-900 pt-1.5 border-t border-mauve-200"><span>Total</span><span id="checkout-total" class="text-mauve-600">R$ 0,00</span></div>
+</div>
+<button type="button" onclick="finalizeOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-5 rounded-2xl font-bold text-sm shadow-lg flex items-center justify-center gap-2.5 transition cursor-pointer">
+<i class="fa-brands fa-whatsapp text-xl"></i>
+<span>Enviar Pedido no WhatsApp</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Customer Profile Modal -->
+<div id="customer-profile-modal" class="fixed inset-0 z-50 hidden bg-mauve-900/65 backdrop-blur-xs flex items-center justify-center p-4">
+<div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-fade-in space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-2xl bg-coral-100 text-coral-500 flex items-center justify-center text-lg"><i class="fa-solid fa-cake-candles"></i></div>
+<div>
+<h3 class="font-serif text-xl font-bold text-mauve-900">Clube VIP Prethuska</h3>
+<p class="text-xs text-mauve-600">Cadastre seu aniversário!</p>
+</div>
+</div>
+<button type="button" onclick="closeCustomerProfileModal()" class="w-8 h-8 rounded-full bg-mauve-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="space-y-3 pt-1">
+<input type="text" id="prof-name" placeholder="Seu Nome" class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none">
+<div class="grid grid-cols-2 gap-3">
+<input type="tel" id="prof-phone" oninput="maskPhone(this)" placeholder="WhatsApp" maxlength="15" class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none">
+<input type="text" id="prof-birthday" oninput="maskDate(this)" placeholder="DD/MM/AAAA" maxlength="10" class="w-full px-3.5 py-2.5 bg-mauve-50 border border-mauve-200 rounded-xl text-sm outline-none">
+</div>
+</div>
+<button type="button" onclick="saveCustomerProfile()" class="w-full bg-mauve-500 hover:bg-mauve-600 text-white py-3.5 rounded-xl font-bold text-sm transition cursor-pointer">Salvar Cadastro</button>
+</div>
+</div>
+<!-- Script Application Logic -->
+<script>
+let settings = {
+storeName: 'PRETHUSKA',
+storeSubtitle: 'acessórios e makeup',
+whatsapp: '5519994604562',
+deliveryFee: 8.00,
+storeAddress: 'Retirada combinada pelo WhatsApp após confirmação',
+instagramUrl: 'https://www.instagram.com/prethuskaacessorios'
+};
+const DEFAULT_PRODUCTS = [{
+id: 'prod_1',
+name: 'Kit Laços Luxo Mãe & Filha Veludo Rosé',
+price: 45.90,
+oldPrice: 59.90,
+category: 'Kits Mãe & Filha',
+variants: ['Rosé Malva', 'Champanhe Dourado'],
+desc: 'Par de laços artesanais feitos à mão com acabamento antideslizante.',
+images: ['https://placehold.co/400x400/F7ECEA/A47873?text=Prethuska+1'],
+outOfStock: false
+}];
+let products = [];
+let coupons = [];
+let activeCoupon = null;
+let currentCustomer = JSON.parse(localStorage.getItem('prethuska_customer')) || { name: '', phone: '', birthday: '', street: '', number: '', neighborhood: '', complement: '' };
+let cart = JSON.parse(localStorage.getItem('prethuska_cart')) || [];
+let selectedCategory = 'Todos';
+let deliveryMode = 'delivery';
+let activeModalProduct = null;
+let activeModalPhotoIndex = 0;
+let activeModalVariant = '';
+let activeModalQty = 1;
+window.onFirebaseReady = async () => {
+initRealtimeListeners();
+fillCustomerInputs();
+setupGallerySwipe();
+};
+function initRealtimeListeners() {
+const db = window.db;
+const docRef = window.firebaseDoc;
+const coll = window.firebaseColl;
+const onSnapshot = window.firebaseOnSnapshot;
+const setDoc = window.firebaseSetDoc;
+onSnapshot(docRef(db, "config", "main"), (docSnap) => {
+if (docSnap.exists() && docSnap.data().dados) {
+settings = docSnap.data().dados;
+applySettingsToUI();
+}
+}, (err) => { console.error(err); });
+onSnapshot(coll(db, "produtos"), async (querySnapshot) => {
+if (!querySnapshot.empty) {
+products = querySnapshot.docs.map(d => d.data().dados);
+} else {
+products = DEFAULT_PRODUCTS;
+for (const p of products) {
+await setDoc(docRef(db, "produtos", p.id), { dados: p });
+}
+}
+renderCategories();
+renderProducts();
+}, (err) => {
+console.error(err);
+products = DEFAULT_PRODUCTS;
+renderCategories();
+renderProducts();
+});
+onSnapshot(coll(db, "cupons"), (querySnapshot) => {
+coupons = querySnapshot.docs.map(d => d.data().dados);
+}, (err) => { console.error(err); });
+}
+function applySettingsToUI() {
+document.title = ⁠${settings.storeName} — ${settings.storeSubtitle}⁠;
+document.getElementById('header-store-name').textContent = settings.storeName;
+document.getElementById('header-store-subtitle').textContent = settings.storeSubtitle;
+document.getElementById('checkout-store-address').textContent = settings.storeAddress;
+document.getElementById('label-delivery-fee-pill').textContent = ⁠Taxa ${formatCurrency(settings.deliveryFee)}⁠;
+document.getElementById('header-insta-link').href = settings.instagramUrl;
+document.getElementById('hero-insta-btn').href = settings.instagramUrl;
+document.getElementById('footer-insta-link').href = settings.instagramUrl;
+const cleanWp = settings.whatsapp ? settings.whatsapp.replace(/\D/g, '') : '5519994604562';
+document.getElementById('floating-whatsapp-btn').href = ⁠https://wa.me/${cleanWp}?text=⁠ + encodeURIComponent('Olá! Gostaria de tirar dúvidas sobre os acessórios.');
+if (currentCustomer.name) {
+document.getElementById('header-user-greeting').textContent = ⁠Olá, ${currentCustomer.name.split(' ')[0]}⁠;
+}
+}
+function formatCurrency(val) { return Number(val || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+function maskPhone(input) {
+let v = input.value.replace(/\D/g, '').slice(0, 11);
+if (v.length > 6) input.value = ⁠(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}⁠;
+else if (v.length > 2) input.value = ⁠(${v.slice(0, 2)}) ${v.slice(2)}⁠;
+else if (v.length > 0) input.value = ⁠(${v}⁠;
+}
+function maskDate(input) {
+let v = input.value.replace(/\D/g, '').slice(0, 8);
+if (v.length > 4) input.value = ⁠${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}⁠;
+else if (v.length > 2) input.value = ⁠${v.slice(0, 2)}/${v.slice(2)}⁠;
+else input.value = v;
+}
+function showToast(message, type = 'success') {
+const container = document.getElementById('toast-container');
+const toast = document.createElement('div');
+toast.className = ⁠${type === 'error' ? 'bg-rose-600' : 'bg-mauve-900'} text-white px-4 py-3 rounded-2xl shadow-lg text-xs font-semibold flex items-center gap-2.5 animate-fade-in border border-white/10⁠;
+toast.innerHTML = ⁠<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check text-gold-400'} text-sm"></i><span>${message}</span>⁠;
+container.appendChild(toast);
+setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 250); }, 3000);
+}
+function renderCategories() {
+const base = ['Todos', 'Acessórios', 'Maquiagem', 'Kits Mãe & Filha', 'Infantil', 'Promoções'];
+const extra = products.map(p => p.category).filter(c => !base.includes(c));
+const cats = [...base, ...new Set(extra)];
+document.getElementById('category-pills').innerHTML = cats.map(cat => {
+const active = cat === selectedCategory;
+return ⁠<button type="button" onclick="selectCategory('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-semibold border whitespace-nowrap transition cursor-pointer ${active ? 'bg-mauve-500 text-white border-mauve-500' : 'bg-white text-mauve-800 border-mauve-200'}">${cat}</button>⁠;
+}).join('');
+}
+function selectCategory(cat) {
+selectedCategory = cat;
+document.getElementById('catalog-title').textContent = cat === 'Todos' ? 'Nossa Vitrine' : cat;
+renderCategories();
+renderProducts();
+}
+function renderProducts() {
+const query = document.getElementById('search-input').value.toLowerCase().trim();
+const grid = document.getElementById('products-grid');
+const empty = document.getElementById('empty-state');
+const filtered = products.filter(p => (selectedCategory === 'Todos' || p.category === selectedCategory) && (p.name.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query))));
+document.getElementById('product-count').textContent = ⁠${filtered.length} itens⁠;
+if (filtered.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+empty.classList.add('hidden');
+grid.innerHTML = filtered.map(p => {
+const cover = p.images?.[0] || 'https://placehold.co/400x400/F7ECEA/A47873?text=Prethuska';
+const count = p.images?.length || 1;
+return ⁠<div class="bg-white rounded-2xl border border-mauve-200/70 overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col group"> <div onclick="openProductModal('${p.id}')" class="relative aspect-square bg-mauve-100 overflow-hidden cursor-pointer"> <img src="${cover}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ${p.outOfStock ? 'opacity-50 grayscale' : ''}"> ${p.outOfStock ? '<span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-mauve-900/90 text-white text-[10px] font-bold uppercase">Esgotado</span>' :⁠<span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/90 text-mauve-800 text-[10px] font-bold">{p.category}</span>`}
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+<button type="button" onclick="${p.outOfStock ? '' : `handleCardAction('{p.id}')⁠}" ${p.outOfStock ? 'disabled' : ''} class="w-9 h-9 rounded-xl ${p.outOfStock ? 'bg-mauve-100 text-mauve-300' : 'bg-mauve-500 text-white'} flex items-center justify-center transition shadow-xs cursor-pointer"><i class="fa-solid fa-plus text-xs"></i></button> </div> </div> </div>⁠;
+}).join('');
+}
+function handleCardAction(id) {
+const p = products.find(item => item.id === id);
+if (!p) return;
+if (p.variants?.length > 0) openProductModal(id);
+else addToCart(id, 1, '', '');
+}
+function openProductModal(id) {
+const p = products.find(item => item.id === id);
+if (!p) return;
+activeModalProduct = p;
+activeModalPhotoIndex = 0;
+activeModalQty = 1;
+activeModalVariant = p.variants?.[0] || '';
+document.getElementById('modal-prod-category').textContent = p.category;
+document.getElementById('modal-prod-name').textContent = p.name;
+document.getElementById('modal-prod-price').textContent = formatCurrency(p.price);
+document.getElementById('modal-prod-desc').textContent = p.desc || '';
+document.getElementById('modal-prod-note').value = '';
+document.getElementById('modal-prod-qty').textContent = '1';
+renderModalGallery();
+const varBox = document.getElementById('modal-variants-box');
+if (p.variants?.length > 0) {
+varBox.classList.remove('hidden');
+document.getElementById('modal-variants-list').innerHTML = p.variants.map(v => ⁠<button type="button" onclick="activeModalVariant='${v}';renderModalVariants();" class="px-3.5 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${v === activeModalVariant ? 'bg-mauve-500 text-white border-mauve-500' : 'bg-mauve-50 text-mauve-800 border-mauve-200'}">${v}</button>⁠).join('');
+} else { varBox.classList.add('hidden'); }
+document.getElementById('product-modal').classList.remove('hidden');
+}
+function renderModalVariants() {
+const p = activeModalProduct;
+document.getElementById('modal-variants-list').innerHTML = p.variants.map(v => ⁠<button type="button" onclick="activeModalVariant='${v}';renderModalVariants();" class="px-3.5 py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${v === activeModalVariant ? 'bg-mauve-500 text-white border-mauve-500' : 'bg-mauve-50 text-mauve-800 border-mauve-200'}">${v}</button>⁠).join('');
+}
+function renderModalGallery() {
+const imgs = activeModalProduct.images?.length > 0 ? activeModalProduct.images : ['https://placehold.co/400x400/F7ECEA/A47873?text=Prethuska'];
+document.getElementById('modal-prod-img').src = imgs[activeModalPhotoIndex];
+const thumbs = document.getElementById('modal-thumbnails-bar');
+if (imgs.length > 1) {
+thumbs.classList.remove('hidden');
+thumbs.innerHTML = imgs.map((img, i) => ⁠<button type="button" onclick="activeModalPhotoIndex=${i};renderModalGallery();" class="w-14 h-14 rounded-xl overflow-hidden border-2 cursor-pointer ${i === activeModalPhotoIndex ? 'border-mauve-500' : 'border-transparent'}"><img src="${img}" class="w-full h-full object-cover"></button>⁠).join('');
+} else { thumbs.classList.add('hidden'); }
+}
+function setupGallerySwipe() {
+const container = document.getElementById('modal-gallery-container');
+let startX = 0;
+container.addEventListener('touchstart', e => { startX = e.changedTouches[0].screenX; }, { passive: true });
+container.addEventListener('touchend', e => {
+const diff = startX - e.changedTouches[0].screenX;
+if (Math.abs(diff) > 40 && activeModalProduct?.images?.length > 1) {
+activeModalPhotoIndex = (activeModalPhotoIndex + (diff > 0 ? 1 : -1) + activeModalProduct.images.length) % activeModalProduct.images.length;
+renderModalGallery();
+}
+}, { passive: true });
+}
+function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
+function changeModalQty(delta) { if (activeModalQty + delta >= 1) { activeModalQty += delta; document.getElementById('modal-prod-qty').textContent = activeModalQty; } }
+function confirmAddToCartFromModal() {
+if (!activeModalProduct) return;
+addToCart(activeModalProduct.id, activeModalQty, activeModalVariant, document.getElementById('modal-prod-note').value.trim());
+closeProductModal();
+}
+function addToCart(id, qty, variant, note) {
+const p = products.find(item => item.id === id);
+if (!p) return;
+const existing = cart.findIndex(item => item.id === id && item.variant === variant && item.note === note);
+if (existing > -1) cart[existing].qty += qty;
+else cart.push({ id: p.id, name: p.name, price: p.price, image: p.images?.[0] || '', qty, variant, note });
+localStorage.setItem('prethuska_cart', JSON.stringify(cart));
+updateCartUI();
+showToast(⁠${p.name} adicionado à sacola!⁠);
+}
+function updateCartItemQty(idx, delta) {
+cart[idx].qty += delta;
+if (cart[idx].qty <= 0) cart.splice(idx, 1);
+localStorage.setItem('prethuska_cart', JSON.stringify(cart));
+updateCartUI();
+if (cart.length === 0) closeCartDrawer();
+}
+function clearCart() { cart = []; localStorage.setItem('prethuska_cart', JSON.stringify(cart)); updateCartUI(); closeCartDrawer(); }
+function applyCoupon() {
+const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+const found = coupons.find(c => c.code === code);
+if (found) {
+activeCoupon = found;
+updateCartUI();
+showToast(⁠Cupom ${found.code} aplicado (${found.discount}% OFF)!⁠);
+} else {
+showToast('Cupom inválido!', 'error');
+}
+}
+function updateCartUI() {
+const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+let discount = 0;
+if (activeCoupon) {
+discount = (subtotal * activeCoupon.discount) / 100;
+}
+const fee = deliveryMode === 'delivery' ? Number(settings.deliveryFee) : 0;
+const total = Math.max(0, subtotal - discount) + fee;
+const bar = document.getElementById('floating-cart-bar');
+if (totalItems > 0) {
+bar.classList.remove('hidden');
+document.getElementById('cart-badge-count').textContent = totalItems;
+document.getElementById('floating-cart-total').textContent = formatCurrency(total);
+} else { bar.classList.add('hidden'); }
+document.getElementById('cart-items-list').innerHTML = cart.map((item, idx) => ⁠<div class="flex items-center gap-3 bg-mauve-50 p-2.5 rounded-2xl border border-mauve-200/70"> <img src="${item.image}" class="w-14 h-14 rounded-xl object-cover shrink-0 bg-white"> <div class="flex-1 min-w-0"> <h4 class="text-xs font-bold text-mauve-900 truncate">${item.name}</h4> ${item.variant ?⁠<span class="inline-block text-[10px] text-mauve-700 bg-mauve-200/60 px-2 py-0.5 rounded-md">${item.variant}</span>⁠ : ''} <p class="text-xs font-bold text-mauve-600 mt-0.5">${formatCurrency(item.price * item.qty)}</p> </div> <div class="flex items-center bg-white border border-mauve-200 rounded-xl p-0.5"> <button type="button" onclick="updateCartItemQty(${idx}, -1)" class="w-7 h-7 font-bold cursor-pointer">-</button> <span class="w-6 text-center text-xs font-bold">${item.qty}</span> <button type="button" onclick="updateCartItemQty(${idx}, 1)" class="w-7 h-7 font-bold cursor-pointer">+</button> </div> </div>⁠).join('');
+document.getElementById('checkout-subtotal').textContent = formatCurrency(subtotal);
+const discRow = document.getElementById('checkout-discount-row');
+if (activeCoupon) {
+discRow.classList.remove('hidden');
+discRow.classList.add('flex');
+document.getElementById('checkout-discount').textContent = ⁠- ${formatCurrency(discount)}⁠;
+} else {
+discRow.classList.add('hidden');
+discRow.classList.remove('flex');
+}
+document.getElementById('checkout-delivery-fee').textContent = fee === 0 ? 'Grátis' : formatCurrency(fee);
+document.getElementById('checkout-total').textContent = formatCurrency(total);
+}
+function openCartDrawer() { fillCustomerInputs(); updateCartUI(); document.getElementById('cart-drawer').classList.remove('hidden'); }
+function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
+function setDeliveryMode(mode) {
+deliveryMode = mode;
+document.getElementById('btn-mode-delivery').className = mode === 'delivery' ? 'p-3 rounded-2xl border-2 border-mauve-500 bg-mauve-500 text-white text-left transition flex flex-col gap-1' : 'p-3 rounded-2xl border-2 border-mauve-200 bg-white text-mauve-800 text-left transition flex flex-col gap-1';
+document.getElementById('btn-mode-pickup').className = mode === 'pickup' ? 'p-3 rounded-2xl border-2 border-mauve-500 bg-mauve-500 text-white text-left transition flex flex-col gap-1' : 'p-3 rounded-2xl border-2 border-mauve-200 bg-white text-mauve-800 text-left transition flex flex-col gap-1';
+document.getElementById('delivery-address-box').classList.toggle('hidden', mode !== 'delivery');
+document.getElementById('pickup-info-box').classList.toggle('hidden', mode !== 'pickup');
+updateCartUI();
+}
+function toggleChangeField() { document.getElementById('cash-change-box').classList.toggle('hidden', document.getElementById('cust-payment').value !== 'Dinheiro'); }
+function fillCustomerInputs() {
+document.getElementById('cust-name').value = currentCustomer.name || '';
+document.getElementById('cust-phone').value = currentCustomer.phone || '';
+document.getElementById('cust-birthday').value = currentCustomer.birthday || '';
+document.getElementById('cust-street').value = currentCustomer.street || '';
+document.getElementById('cust-number').value = currentCustomer.number || '';
+document.getElementById('cust-neighborhood').value = currentCustomer.neighborhood || '';
+document.getElementById('cust-complement').value = currentCustomer.complement || '';
+}
+function openCustomerProfileModal() {
+document.getElementById('prof-name').value = currentCustomer.name || '';
+document.getElementById('prof-phone').value = currentCustomer.phone || '';
+document.getElementById('prof-birthday').value = currentCustomer.birthday || '';
+document.getElementById('customer-profile-modal').classList.remove('hidden');
+}
+function closeCustomerProfileModal() { document.getElementById('customer-profile-modal').classList.add('hidden'); }
+async function saveCustomerProfile() {
+const name = document.getElementById('prof-name').value.trim();
+const phone = document.getElementById('prof-phone').value.trim();
+const birthday = document.getElementById('prof-birthday').value.trim();
+if (!name || !phone || birthday.length < 10) { showToast('Preencha todos os campos.', 'error'); return; }
+currentCustomer = { ...currentCustomer, name, phone, birthday };
+localStorage.setItem('prethuska_customer', JSON.stringify(currentCustomer));
+await registerCustomerInCloud(name, phone, birthday);
+applySettingsToUI();
+closeCustomerProfileModal();
+showToast('Cadastro VIP salvo!');
+}
+async function registerCustomerInCloud(name, phone, birthday) {
+const clean = phone.replace(/\D/g, '');
+const clientData = { id: clean, name, phone, birthday };
+const db = window.db;
+const docRef = window.firebaseDoc;
+const setDoc = window.firebaseSetDoc;
+await setDoc(docRef(db, "clientes", clean), { dados: clientData });
+}
+async function finalizeOrder() {
+if (cart.length === 0) return;
+const name = document.getElementById('cust-name').value.trim();
+const phone = document.getElementById('cust-phone').value.trim();
+const birthday = document.getElementById('cust-birthday').value.trim();
+const payment = document.getElementById('cust-payment').value;
+if (!name || !phone || birthday.length < 10) { showToast('Preencha Nome, WhatsApp e Aniversário.', 'error'); return; }
+currentCustomer = { name, phone, birthday };
+localStorage.setItem('prethuska_customer', JSON.stringify(currentCustomer));
+await registerCustomerInCloud(name, phone, birthday);
+const orderNum = Math.floor(1000 + Math.random() * 9000);
+const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+const discount = activeCoupon ? (subtotal * activeCoupon.discount) / 100 : 0;
+const fee = deliveryMode === 'delivery' ? Number(settings.deliveryFee) : 0;
+const total = Math.max(0, subtotal - discount) + fee;
+let itemsSummary = cart.map(i => ⁠${i.qty}x ${i.name} ${i.variant ? ⁠(${i.variant})⁠ : ''}⁠).join(', ');
+const orderData = {
+orderNum,
+customerName: name,
+customerPhone: phone,
+birthday,
+itemsSummary,
+deliveryMode,
+address: deliveryMode === 'delivery' ? ⁠${document.getElementById('cust-street').value}, ${document.getElementById('cust-number').value} - ${document.getElementById('cust-neighborhood').value}⁠ : 'Retirada na Loja',
+payment,
+subtotal,
+discount,
+fee,
+total,
+status: 'Aguardando',
+timestamp: Date.now()
+};
+try {
+const db = window.db;
+const coll = window.firebaseColl;
+const addDoc = window.firebaseAddDoc;
+await addDoc(coll(db, "pedidos"), orderData);
+} catch(e) { console.error("Order save error:", e); }
+let msg = ⁠💖 *NOVO PEDIDO #${orderNum} — PRETHUSKA*\n⁠;
+msg += ⁠👤 *Cliente:* ${name} | 📱 ${phone}\n🎂 *Aniversário:* ${birthday}\n\n🛍️ *ITENS:*\n⁠;
+cart.forEach(item => { msg += ⁠• ${item.qty}x ${item.name} ${item.variant ? ⁠(${item.variant})⁠ : ''} — ${formatCurrency(item.price * item.qty)}\n⁠; });
+if (activeCoupon) msg += ⁠🎟️ *Cupom:* ${activeCoupon.code} (-${formatCurrency(discount)})\n⁠;
+msg += ⁠\n🚚 *MODALIDADE:* ${deliveryMode === 'delivery' ? 'Delivery' : 'Retirada'}\n⁠;
+if (deliveryMode === 'delivery') {
+msg += ⁠📍 ${document.getElementById('cust-street').value}, ${document.getElementById('cust-number').value} - ${document.getElementById('cust-neighborhood').value}\n⁠;
+}
+msg += ⁠💳 *Pagamento:* ${payment}\n━━━━━━━━━━━━━━━━━━━━\n✨ *TOTAL: ${formatCurrency(total)}*⁠;
+cart = [];
+localStorage.removeItem('prethuska_cart');
+updateCartUI();
+closeCartDrawer();
+const cleanWp = settings.whatsapp ? settings.whatsapp.replace(/\D/g, '') : '5519994604562';
+window.open(⁠https://wa.me/${cleanWp}?text=${encodeURIComponent(msg)}⁠, '_blank');
+}
+</script>
+</body>
+</html>
